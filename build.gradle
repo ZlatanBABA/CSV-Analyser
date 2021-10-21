@@ -1,6 +1,7 @@
 plugins {
     id 'java-library'
 }
+compileJava {options.encoding = "UTF-8"}
 
 repositories {
     mavenCentral()
@@ -9,3 +10,5 @@ repositories {
 dependencies {
     testImplementation 'junit:junit:4.13.2'
 }
+sourceCompatibility = 10
+targetCompatibility = 10

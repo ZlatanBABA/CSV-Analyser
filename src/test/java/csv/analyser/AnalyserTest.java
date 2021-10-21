@@ -6,10 +6,10 @@ package csv.analyser;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class LibraryTest {
+public class AnalyserTest {
     @Test
     public void someLibraryMethodReturnsTrue() {
-        Library classUnderTest = new Library();
+        Analyser classUnderTest = new Analyser();
         assertTrue("someLibraryMethod should return 'true'", classUnderTest.someLibraryMethod());
     }
 }
