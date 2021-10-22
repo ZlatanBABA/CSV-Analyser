@@ -30,8 +30,8 @@ public class Analyser {
     private static final BigDecimal HUND = new BigDecimal(100);
     private static final BigDecimal TEN_K = new BigDecimal(10000);
     private static final BigDecimal HUND_MIO = new BigDecimal(100000000);
-    private static final File inputFile = new File("input/20211021161135.csv");
-    private static final File outputFile = new File("output/20211021161135.csv");
+    private static final File inputFile = new File("input/20211020145843.csv");
+    private static final File outputFile = new File("output/20211020145843.csv");
 
     private final String date;
 
@@ -137,19 +137,8 @@ public class Analyser {
     }
 
     private static String division(String top, String bottom) {
-        //if (top.contains("万") && bottom.contains("万")) {
-        //    top = top.substring(0, top.length() - 1);
-        //    bottom = bottom.substring(0, bottom.length() - 1);
-        //} else if (top.contains("亿") && bottom.contains("亿")) {
-        //    top = top.substring(0, top.length() - 1);
-        //    bottom = bottom.substring(0, bottom.length() - 1);
-        //} else if (top.contains("万") && bottom.contains("亿")) {
-        //    top = top.substring(0, top.length() - 1);
-        //    bottom = bottom.substring(0, bottom.length() - 1) + "万";
-        //}
-
-        int divisor = Integer.parseInt(unified(top));
-        int dividend = Integer.parseInt(unified(bottom));
+        long divisor = Long.parseLong(unified(top));
+        long dividend = Long.parseLong(unified(bottom));
         String result;
         if (dividend > 0) {
             BigDecimal bd = new BigDecimal(divisor / (double) dividend);
