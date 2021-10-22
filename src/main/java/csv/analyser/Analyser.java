@@ -73,6 +73,9 @@ public class Analyser {
                     case COL_CHENG_JIAO_LIANG:
                         title = "当日收盘成交量";
                         break;
+                    case 3:
+                        title = "收盘价";
+                        break;
                     case 11:
                         result.append(SPLITTER).append(title);
                         title = "流通市值占比";
@@ -98,7 +101,7 @@ public class Analyser {
             if (i != COL_MING_CHENG) {
                 switch (i) {
                     case COL_C:
-                        if (column.contains("空壳公")) return EMPTY;
+                        if (column.contains("空壳公") || column.equals("-")) return EMPTY;
                         break;
                     case COL_D:
                         double d = Double.parseDouble(column);
@@ -106,21 +109,31 @@ public class Analyser {
                         break;
                     case COL_F:
                         column = unified(column);
+                        long value = Long.parseLong(unified(column));
+                        if (value < 10000) return EMPTY;
                         break;
                     case COL_H:
                         column += "%";
                         break;
                     case COL_K:
                         column = unified(column);
+                        long valueK = Long.parseLong(unified(column));
+                        if (valueK == 0) return EMPTY;
                         break;
                     case COL_L:
+                        long valueL = Long.parseLong(unified(column));
+                        if (valueL == 0) return EMPTY;
                         builder.append(SPLITTER).append(unified(column));
                         column = division(column, columns[COL_K]);
                         break;
                     case COL_M:
+                        long valueM = Long.parseLong(unified(column));
+                        if (valueM == 0) return EMPTY;
                         column = unified(column);
                         break;
                     case COL_N:
+                        long valueN = Long.parseLong(unified(column));
+                        if (valueN == 0) return EMPTY;
                         builder.append(SPLITTER).append(unified(column));
                         column = division(column, columns[COL_M]);
                         break;
@@ -137,13 +150,21 @@ public class Analyser {
     }
 
     private static String division(String top, String bottom) {
+        if (top.contains("亿") && bottom.contains("亿")) {
+            top = top.substring(0, top.length() - 1) + "百";
+            bottom = bottom.substring(0, bottom.length() - 1) + "百";
+        }
+
         long divisor = Long.parseLong(unified(top));
         long dividend = Long.parseLong(unified(bottom));
         String result;
         if (dividend > 0) {
             BigDecimal bd = new BigDecimal(divisor / (double) dividend);
             result = String.valueOf(bd.multiply(HUND));
-            result = result.substring(0, result.indexOf(".") + 2) + "%";
+            if (result.contains(".")) {
+                result = result.substring(0, result.indexOf(".") + 2);
+            }
+            result += "%";
         } else {
             result = "NaN";
         }
@@ -154,11 +175,15 @@ public class Analyser {
         if (s.contains("万")) {
             s = s.substring(0, s.length() - 1);
             BigDecimal bd = new BigDecimal(s);
-            s = String.valueOf(bd.multiply(TEN_K).intValue());
+            s = String.valueOf(bd.multiply(TEN_K).longValue());
         } else if (s.contains("亿")) {
             s = s.substring(0, s.length() - 1);
             BigDecimal bd = new BigDecimal(s);
-            s = String.valueOf(bd.multiply(HUND_MIO).intValue());
+            s = String.valueOf(bd.multiply(HUND_MIO).longValue());
+        } else if (s.contains("百")) {
+            s = s.substring(0, s.length() - 1);
+            BigDecimal bd = new BigDecimal(s);
+            s = String.valueOf(bd.multiply(HUND).longValue());
         }
         return s;
     }
